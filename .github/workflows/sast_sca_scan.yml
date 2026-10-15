@@ -30,8 +30,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.organization=Admin
-            -Dsonar.projectKey=Vulnerable_Flask_App
+            -Dsonar.organization=sara12234
+            -Dsonar.projectKey=sara12234_sast-sca-dast-demo
             -Dsonar.sources=vulnerable_flask_app
 
       - name: SonarQube Quality Gate check
