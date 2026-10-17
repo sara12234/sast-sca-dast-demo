@@ -20,7 +20,7 @@ jobs:
         run: docker build -t my-vulnerable-flask-app ./vulnerable_flask_app
 
       - name: Run Flask Docker container
-        run: docker run -d --name flask-app-container -p 5000:5000 --network zap-network my-vulnerable-flask-app
+        run: docker run -d --name flask-app-container -p 5000:5000 -e SECRET_KEY=test-key-ci --network zap-network my-vulnerable-flask-app
 
       - name: Wait for app to start
         run: sleep 10
