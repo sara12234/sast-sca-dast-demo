@@ -42,5 +42,6 @@ jobs:
       - name: Run pip-audit
         if: always()
         run: |
-          pip install pip-audit
+          python -m pip install --upgrade pip
+          python -m pip install pip-audit
           pip-audit -r vulnerable_flask_app/requirements.txt
