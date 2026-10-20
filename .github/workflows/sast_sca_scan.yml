@@ -38,9 +38,17 @@ jobs:
         uses: sonarsource/sonarqube-quality-gate-action@v1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
       - name: Run pip-audit
         if: always()
         run: |
-          pip install pip-audit
-          pip-audit -r vulnerable_flask_app/requirements.txt
+         python -m pip install --upgrade pip
+         python -m pip install pip-audit
+
+         echo "=== Requirements used by GitHub Actions ==="
+         cat vulnerable_flask_app/requirements.txt
+
+         echo "=== Installed package versions ==="
+         python -m pip show Flask Werkzeug || true
+
+         echo "=== Running security audit ==="
+         pip-audit -r vulnerable_flask_app/requirements.txt
