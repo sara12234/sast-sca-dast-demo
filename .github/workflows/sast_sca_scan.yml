@@ -42,14 +42,5 @@ jobs:
       - name: Run pip-audit
         if: always()
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install pip-audit
-
-          echo "=== Requirements used by GitHub Actions ==="
-          cat vulnerable_flask_app/requirements.txt
-
-          echo "=== Installed package versions ==="
-          python -m pip show Flask Werkzeug || true
-
-          echo "=== Running security audit ==="
+          pip install pip-audit
           pip-audit -r vulnerable_flask_app/requirements.txt
