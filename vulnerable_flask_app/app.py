@@ -1,23 +1,31 @@
+```python
 import os
 import subprocess
+
 from flask import Flask, request
+from flask_wtf.csrf import CSRFProtect
 from markupsafe import escape
 
 app = Flask(__name__)
 
-# Secret lu depuis l'environnement, jamais dans le code
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-if not app.config['SECRET_KEY']:
+# Secret lu depuis une variable d'environnement
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+
+if not app.config["SECRET_KEY"]:
     raise RuntimeError("La variable d'environnement SECRET_KEY est requise")
 
-# Liste blanche : l'utilisateur choisit une clé, pas une commande
+# Activation de la protection CSRF
+csrf = CSRFProtect(app)
+
+# Liste blanche des commandes autorisées
 ALLOWED_COMMANDS = {
     "ls": ["ls", "-l"],
     "date": ["date"],
     "whoami": ["whoami"],
 }
 
-@app.route('/')
+
+@app.route("/")
 def index():
     return """
     <h1>Welcome to our Flask App</h1>
@@ -28,21 +36,32 @@ def index():
     </ul>
     """
 
-@app.route('/hello')
+
+@app.route("/hello")
 def hello():
-    name = escape(request.args.get('name', 'Guest'))
+    name = escape(request.args.get("name", "Guest"))
+
     return f"""
     <h1>Hello Page</h1>
     <p>Hello, {name}!</p>
     <p><a href="/">Back to Homepage</a></p>
     """
 
-@app.route('/execute')
+
+@app.route("/execute", methods=["GET"])
 def execute():
-    key = request.args.get('cmd', 'ls')
+    key = request.args.get("cmd", "ls")
+
     if key not in ALLOWED_COMMANDS:
         return "Commande non autorisée", 400
-    result = subprocess.run(ALLOWED_COMMANDS[key], capture_output=True, text=True)
+
+    result = subprocess.run(
+        ALLOWED_COMMANDS[key],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
     return f"""
     <h1>Execute Command Page</h1>
     <p>Executing command: <code>{escape(key)}</code></p>
@@ -51,10 +70,12 @@ def execute():
     <p><a href="/">Back to Homepage</a></p>
     """
 
-@app.route('/admin')
+
+@app.route("/admin")
 def admin():
     return """
     <h1>Admin Area</h1>
     <p>Accès réservé.</p>
     <p><a href="/">Back to Homepage</a></p>
     """
+```
