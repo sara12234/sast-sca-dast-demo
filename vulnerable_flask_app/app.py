@@ -77,4 +77,3 @@ def admin():
     <p>Accès réservé.</p>
     <p><a href="/">Back to Homepage</a></p>
     """
-```
